@@ -1,1 +1,4 @@
 theme: jekyll-theme-cayman
+title: DHome Android application
+description: Official android application for controlling DHome ecosystem
+show_releases: true
