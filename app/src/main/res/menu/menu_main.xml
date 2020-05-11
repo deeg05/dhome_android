@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ml.deeg05.dhome.MainActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="1"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_clear"
+        android:orderInCategory="1"
+        android:title="@string/action_clear"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_about"
+        android:title="@string/about"
+        android:orderInCategory="2"/>
+</menu>
