@@ -7,16 +7,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.Switch
 import com.google.android.material.snackbar.Snackbar
 import devicesModel
 import okhttp3.*
 import java.io.IOException
-
-
-val TAG = "Response"
 
 class DevicesAdapter(private val activity: Activity, devices: List<devicesModel>) : BaseAdapter() {
 
@@ -41,9 +37,9 @@ class DevicesAdapter(private val activity: Activity, devices: List<devicesModel>
     @SuppressLint("InflateParams", "ViewHolder")
     override fun getView(i: Int, View: View?, viewGroup: ViewGroup): View {
         val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val vi = inflater.inflate(R.layout.list_item, null)
+        val vi = inflater.inflate(R.layout.list_item, null) // Inflate view
         val switch = vi.findViewById(R.id.devswitch) as Switch
-        switch.text = devices[i].name
+        switch.text = devices[i].name // Set switch name
 
         val url : String = "http://" + devices[i].ip // Set URL
 

@@ -36,17 +36,14 @@ class AddActivity : AppCompatActivity() {
         editAddress.setOnKeyListener(View.OnKeyListener {_, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN) if (keyCode == KeyEvent.KEYCODE_ENTER) {
 
-                getList()
+                getList() // Get List
 
-                val nameString : String = editName.text.toString()
+                val nameString : String = editName.text.toString() // Get text from EditTexts
                 val addressString : String = editAddress.text.toString()
 
-                devices.add(devicesModel(nameString, addressString))
+                devices.add(devicesModel(nameString, addressString)) // Add fresh device to list
 
-                editName.setText("")
-                editAddress.setText("")
-
-                saveList()
+                saveList() // Save list
 
                 finish()
                 return@OnKeyListener true
@@ -56,7 +53,7 @@ class AddActivity : AppCompatActivity() {
     }
 
     private fun saveList() {
-        val sharedPreference =  getSharedPreferences("test_changeme_on_production",Context.MODE_PRIVATE)
+        val sharedPreference =  getSharedPreferences("devices",Context.MODE_PRIVATE)
         val editor = sharedPreference.edit()
 
         val gson = Gson()
@@ -68,7 +65,7 @@ class AddActivity : AppCompatActivity() {
     }
 
     private fun getList() {
-        val sharedPreference =  getSharedPreferences("test_changeme_on_production",Context.MODE_PRIVATE)
+        val sharedPreference =  getSharedPreferences("devices",Context.MODE_PRIVATE)
         val gson = Gson()
 
         if (sharedPreference.getString("devices", "") != "") {

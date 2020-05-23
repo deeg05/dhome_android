@@ -1,8 +1,5 @@
 package ml.deeg05.dhome
 
-// DHome 0.1 - Public Beta
-// "Lightswitch only" - only remote ON/OFF capability
-
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -68,11 +65,6 @@ open class MainActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
             R.id.action_clear -> {
-                val sharedPreference =  getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE)
-                val editor = sharedPreference.edit()
-                editor.remove("devices") // Remove from SharedPreferences
-                editor.apply()
-
                 devices.clear() // Clear deviceModel ArrayList
 
                 saveList() // Save
@@ -105,7 +97,7 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun saveList() {
-        val sharedPreference =  getSharedPreferences("test_changeme_on_production",Context.MODE_PRIVATE)
+        val sharedPreference =  getSharedPreferences("devices",Context.MODE_PRIVATE)
         val editor = sharedPreference.edit()
         
         val gson = Gson()
@@ -116,7 +108,7 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun getList() {
-        val sharedPreference =  getSharedPreferences("test_changeme_on_production",Context.MODE_PRIVATE)
+        val sharedPreference =  getSharedPreferences("devices",Context.MODE_PRIVATE)
         val gson = Gson()
 
         if (sharedPreference.getString("devices", "") != "") {
