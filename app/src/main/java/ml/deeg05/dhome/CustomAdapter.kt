@@ -1,39 +1,60 @@
 package ml.deeg05.dhome
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.BaseAdapter
 import android.widget.Switch
 import com.google.android.material.snackbar.Snackbar
+import devicesModel
 import okhttp3.*
 import java.io.IOException
 
+
 val TAG = "Response"
 
-// Our custom ListView adapter
-class DevicesAdapter(private val context: Activity, private val title: ArrayList<String>) : ArrayAdapter<String>(context, R.layout.list_item, title) {
+class DevicesAdapter(private val activity: Activity, devices: List<devicesModel>) : BaseAdapter() {
 
-    override fun getView(position: Int, view: View?, parent: ViewGroup): View {
-        val inflater = context.layoutInflater // Inflate listview with items
-        val rowView = inflater.inflate(R.layout.list_item, null, true) // Init rowView
+    private var devices = ArrayList<devicesModel>()
 
-        val titleText = rowView.findViewById(R.id.devswitch) as Switch // Text of item
-        val toggleSwitch = rowView.findViewById(R.id.devswitch) as Switch //Switch of item
+    init {
+        this.devices = devices as ArrayList
+    }
 
-        titleText.text = title[position] // Set text
+    override fun getCount(): Int {
+        return devices.size
+    }
 
-        val url : String = "http://" + title[position] // Set URL
+    override fun getItem(i: Int): Any {
+        return i
+    }
 
-        toggleSwitch.setOnCheckedChangeListener { buttonView, isChecked -> // Listen to switch changes
+    override fun getItemId(i: Int): Long {
+        return i.toLong()
+    }
+
+    @SuppressLint("InflateParams", "ViewHolder")
+    override fun getView(i: Int, View: View?, viewGroup: ViewGroup): View {
+        val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val vi = inflater.inflate(R.layout.list_item, null)
+        val switch = vi.findViewById(R.id.devswitch) as Switch
+        switch.text = devices[i].name
+
+        val url : String = "http://" + devices[i].ip // Set URL
+
+        switch.setOnCheckedChangeListener { buttonView, isChecked -> // Listen to switch changes
             if (isChecked) {
 
                 val urlOn = "$url/1"
                 getHttpResponse(urlOn) // Change state
 
                 val snackbar = Snackbar // Show Snackbar
-                    .make(rowView, "Turned ON", Snackbar.LENGTH_LONG)
+                    .make(vi, "Turned ON", Snackbar.LENGTH_LONG)
                 snackbar.show()
             } else {
 
@@ -41,15 +62,14 @@ class DevicesAdapter(private val context: Activity, private val title: ArrayList
                 getHttpResponse(urlOff) // Change state
 
                 val snackbar = Snackbar
-                    .make(rowView, "Turned OFF", Snackbar.LENGTH_LONG)
+                    .make(vi, "Turned OFF", Snackbar.LENGTH_LONG)
                 snackbar.show()
             }
         }
 
-        return rowView
+        return vi
     }
 
-    // Http Get request function
     @Throws(IOException::class)
     fun getHttpResponse(url: String) {
 

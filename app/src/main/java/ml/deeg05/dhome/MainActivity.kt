@@ -7,26 +7,28 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import devicesModel
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
-import java.util.*
-import kotlin.collections.HashSet
+import java.lang.reflect.Type
 
 
 open class MainActivity : AppCompatActivity() {
 
-    var devicesArray : ArrayList<String> = ArrayList<String>()
+    private var devices : ArrayList<devicesModel> = ArrayList<devicesModel>()
+    private var finalArray : ArrayList<String> = ArrayList<String>()
     lateinit var devicesAdapter : DevicesAdapter
+    private var isFirstRun : Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,24 +39,21 @@ open class MainActivity : AppCompatActivity() {
         // Get element as ListView
         val devicesView = findViewById<View>(R.id.devices) as ListView
 
-        getList() // Load deviceArray from SharedPreferences
+        getList() // Load devices from SharedPreferences
 
         // Initialise devicesAdapter
-        devicesAdapter = DevicesAdapter(this, devicesArray)
+        devicesAdapter = DevicesAdapter(this, devices)
 
         //Set adapter of listView to adapter
         devicesView.adapter = devicesAdapter
 
         // Set fab onClickListener
         fab.setOnClickListener { view ->
-
-            // Make snackbar saying that we are working on it
-            Snackbar.make(view, "Work in progress", Snackbar.LENGTH_LONG).show()
-
-            //TODO Activity for IP address input
             val intent = Intent(this, AddActivity::class.java)
             startActivity(intent)
         }
+
+        isFirstRun = false
     }
     // Inflate menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -70,11 +69,12 @@ open class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.action_clear -> {
                 val sharedPreference =  getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE)
-                var editor = sharedPreference.edit()
+                val editor = sharedPreference.edit()
                 editor.remove("devices") // Remove from SharedPreferences
-                editor.commit()
+                editor.apply()
 
-                devicesArray.clear() // Clear arrayList
+                devices.clear() // Clear deviceModel ArrayList
+
                 saveList() // Save
                 updateListView() // Update listView
 
@@ -105,38 +105,40 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun saveList() {
-        val sharedPreference = getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE)
-        var editor = sharedPreference.edit()
-
-        editor.putStringSet("devices", HashSet(devicesArray)) // Put StringSet into SharedPreferences
-        editor.commit()
+        val sharedPreference =  getSharedPreferences("test_changeme_on_production",Context.MODE_PRIVATE)
+        val editor = sharedPreference.edit()
+        
+        val gson = Gson()
+        val json = gson.toJson(devices)
+        editor.putString("devices", json)
+        
+        editor.apply()
     }
 
     private fun getList() {
-        val sharedPreference =  getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE)
+        val sharedPreference =  getSharedPreferences("test_changeme_on_production",Context.MODE_PRIVATE)
+        val gson = Gson()
 
-        if (sharedPreference.getStringSet("devices",null) != null) { // If there is anything in SharedPreferences
-            val set = sharedPreference.getStringSet("devices", null)!!.toMutableList() // Convert StringSet to MutableList
-            devicesArray = ArrayList(set)
+        if (sharedPreference.getString("devices", "") != "") {
+            val json = sharedPreference.getString("devices", "")
+            val type: Type = object : TypeToken<List<devicesModel?>?>() {}.type
+            devices.clear()
+            devices.addAll(gson.fromJson<List<devicesModel>>(json, type))
         }
     }
 
     private fun updateListView() {
-        devicesAdapter.clear()
-
         getList()
-        devicesAdapter.addAll(devicesArray)
         devicesAdapter.notifyDataSetChanged()
     }
 
     override fun onPause() {
         super.onPause()
-        saveList()
+        //saveList()
     }
 
     override fun onResume() {
         super.onResume()
-
         updateListView()
     }
 }

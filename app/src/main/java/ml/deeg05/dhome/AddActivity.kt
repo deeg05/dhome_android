@@ -10,28 +10,38 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.content_main.*
 import android.content.SharedPreferences
+import android.util.Log
 import android.widget.Toast
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import devicesModel
+import kotlinx.android.synthetic.main.activity_add.*
+import java.lang.reflect.Type
 import java.util.ArrayList
 
 
 class AddActivity : AppCompatActivity() {
 
-    var devicesArray : ArrayList<String> = ArrayList<String>()
+    private var devices : ArrayList<devicesModel> = ArrayList<devicesModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
 
         // TextBoxes
-        val editName = findViewById<View>(R.id.name) as EditText
-        val editAddress = findViewById<View>(R.id.ip) as EditText
+        val editName : EditText = findViewById<View>(R.id.nameEdit) as EditText
+        val editAddress : EditText = findViewById<View>(R.id.addressEdit) as EditText
 
         // Listen to keys
         editAddress.setOnKeyListener(View.OnKeyListener {_, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN) if (keyCode == KeyEvent.KEYCODE_ENTER) {
 
                 getList()
-                devicesArray.add(editAddress.text.toString())
+
+                val nameString : String = editName.text.toString()
+                val addressString : String = editAddress.text.toString()
+
+                devices.add(devicesModel(nameString, addressString))
 
                 editName.setText("")
                 editAddress.setText("")
@@ -46,19 +56,25 @@ class AddActivity : AppCompatActivity() {
     }
 
     private fun saveList() {
-        val sharedPreference =  getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE)
-        var editor = sharedPreference.edit()
+        val sharedPreference =  getSharedPreferences("test_changeme_on_production",Context.MODE_PRIVATE)
+        val editor = sharedPreference.edit()
 
-        editor.putStringSet("devices", HashSet(devicesArray)) // Put StringSet into SharedPreferences
-        editor.commit()
+        val gson = Gson()
+        val json = gson.toJson(devices)
+        Log.d("json is", json)
+        editor.putString("devices", json)
+
+        editor.apply()
     }
 
     private fun getList() {
-        val sharedPreference =  getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE)
+        val sharedPreference =  getSharedPreferences("test_changeme_on_production",Context.MODE_PRIVATE)
+        val gson = Gson()
 
-        if (sharedPreference.getStringSet("devices",null) != null) { // If there is anything in SharedPreferences
-            val set = sharedPreference.getStringSet("devices", null)!!.toMutableList() // Convert StringSet to MutableList
-            devicesArray = ArrayList(set)
+        if (sharedPreference.getString("devices", "") != "") {
+            val json = sharedPreference.getString("devices", "")
+            val type: Type = object : TypeToken<List<devicesModel?>?>() {}.type
+            devices.addAll(gson.fromJson<List<devicesModel>>(json, type))
         }
     }
 }

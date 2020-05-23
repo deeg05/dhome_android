@@ -7,7 +7,7 @@
     tools:context=".AddActivity">
 
     <EditText
-        android:id="@+id/name"
+        android:id="@+id/nameEdit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
@@ -21,7 +21,7 @@
         android:autofillHints="" />
 
     <EditText
-        android:id="@+id/ip"
+        android:id="@+id/addressEdit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name"
+        app:layout_constraintTop_toBottomOf="@+id/nameEdit"
         android:autofillHints="" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
