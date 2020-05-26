@@ -43,7 +43,7 @@ class DevicesAdapter(private val activity: Activity, devices: List<devicesModel>
 
         val url : String = "http://" + devices[i].ip // Set URL
 
-        switch.setOnCheckedChangeListener { buttonView, isChecked -> // Listen to switch changes
+        switch.setOnCheckedChangeListener { _, isChecked -> // Listen to switch changes
             if (isChecked) {
 
                 val urlOn = "$url/1"

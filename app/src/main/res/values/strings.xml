@@ -1,20 +1,13 @@
 <resources>
     <string name="app_name">DHome</string>
     <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="about">About</string>
-    <string name="AboutText">Deeg05 2020</string>
-    <string name="Logo_Bottom">Home control system</string>
-    <string name="Logo_Upper">DHome</string>
-    <string name="ExitButton">X</string>
     <string name="title_activity_add">Add New Device</string>
+
+    <string name="about">About</string>
+    <string name="AboutText">DHome is ecosystem that allows you to manage your own home with convenience</string>
+    <string name="creator">Deeg05 2020</string>
+    <string name="okbutton">OK</string>
+
     <string name="prompt_name">Name</string>
     <string name="prompt_ip">IP Address</string>
     <string name="action_add">Add new device</string>

@@ -45,7 +45,7 @@ open class MainActivity : AppCompatActivity() {
         devicesView.adapter = devicesAdapter
 
         // Set fab onClickListener
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener {
             val intent = Intent(this, AddActivity::class.java)
             startActivity(intent)
         }
@@ -73,7 +73,9 @@ open class MainActivity : AppCompatActivity() {
                 return true
             }
             R.id.action_settings -> { // Handle click on settings item
-                Toast.makeText(this, "Here be settings...", Toast.LENGTH_LONG).show()
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+
                 return true
             }
             R.id.action_about -> {  // Handle click on about item
@@ -88,11 +90,11 @@ open class MainActivity : AppCompatActivity() {
         // Create Dialog builder
         val builder = AlertDialog.Builder(this)
         // Set Dialog title
-        builder.setTitle("About")
+        builder.setTitle(R.string.about)
         // Set Dialog Message
-        builder.setMessage("DHome is ecosystem that allows you to manage your own home with convenience")
+        builder.setMessage(R.string.AboutText)
         // Add button with caption "OK" and listener what will just close dialog
-        builder.setPositiveButton("Ok", { dialogInterface: DialogInterface, i: Int -> })
+        builder.setPositiveButton(R.string.okbutton) { _: DialogInterface, _: Int -> }
         builder.show()
     }
 
