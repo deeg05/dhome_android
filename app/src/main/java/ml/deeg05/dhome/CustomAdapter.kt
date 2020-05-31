@@ -13,6 +13,8 @@ import com.google.android.material.snackbar.Snackbar
 import devicesModel
 import okhttp3.*
 import java.io.IOException
+import java.util.concurrent.CountDownLatch
+
 
 class DevicesAdapter(private val activity: Activity, devices: List<devicesModel>) : BaseAdapter() {
 
@@ -43,6 +45,8 @@ class DevicesAdapter(private val activity: Activity, devices: List<devicesModel>
 
         val url : String = "http://" + devices[i].ip // Set URL
 
+        if (getHttpResponse(url) == "ON") switch.isChecked = true
+
         switch.setOnCheckedChangeListener { _, isChecked -> // Listen to switch changes
             if (isChecked) {
 
@@ -67,13 +71,15 @@ class DevicesAdapter(private val activity: Activity, devices: List<devicesModel>
     }
 
     @Throws(IOException::class)
-    fun getHttpResponse(url: String) {
+    fun getHttpResponse(url: String) : String{
+        var returnResponse : String? = null
 
         val client = OkHttpClient() // Request builder stuff
         val request = Request.Builder()
             .url(url)
             .build()
 
+        val countDownLatch = CountDownLatch(1)
         client.newCall(request).enqueue(object : Callback { // Make call
             override fun onFailure(call: Call, e: IOException) {
                 val mMessage = e.message.toString()
@@ -84,9 +90,15 @@ class DevicesAdapter(private val activity: Activity, devices: List<devicesModel>
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 val mMessage = response.body!!.string()
-                Log.w("status is", mMessage)
-                Log.w(mMessage, mMessage)
+                Log.w("response", mMessage)
+                //Log.w(mMessage, mMessage)
+                returnResponse = mMessage
+                countDownLatch.countDown()
             }
         })
+
+        countDownLatch.await()
+        if (returnResponse != null) return returnResponse as String
+        else return "error"
     }
 }
